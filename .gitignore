@@ -4,3 +4,5 @@
 /client/.env
 /client/node_modules
 /client/build
+
+/socket/node_modules

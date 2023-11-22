@@ -9,7 +9,6 @@ export default function Conversation({conversation, currentUser}) {
     const getUser = async () => {
       try {
         const res = await axiosInstance(`/users/${friendId}`)
-        console.log(res.data)
         setUser(res.data)
       } catch(err){
         console.log("Cannot find user")

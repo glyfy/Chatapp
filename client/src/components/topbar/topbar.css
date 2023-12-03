@@ -12,6 +12,10 @@
     flex:3;
 }
 
+.homeLink{
+    text-decoration: none;
+}
+
 .logo{
     font-style: 24px;
     margin-left: 20px;

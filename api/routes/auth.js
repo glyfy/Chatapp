@@ -9,7 +9,7 @@ router.post("/register", async (req, res)=> {
         const salt = await bcrypt.genSalt(10); 
         const hashedpassword = await bcrypt.hash(req.body.password, salt);
     
-        const username = await User.findOne({username: req.body.username}).exec();
+        const username = await User.findOne({username: req.body.username});
 
         if (username) {
             res.status(404).json("Username already taken")

@@ -15,7 +15,8 @@ router.post("/", async (req,res)=>{
         res.status(500).json(err)
     }
 })
-//get conv of user
+
+//get all conversations of user
 router.get("/:userId", async (req,res) => {
     console.log(req.params.userId)
     try{
@@ -28,4 +29,15 @@ router.get("/:userId", async (req,res) => {
     }
 })
 
+//get one specific conversation between two users
+router.get("/:Id1/:Id2", async (req,res) => {
+    try{
+        const conversation = await Conversation.find({
+            members:{$in: [req.params.Id1, req.params.Id2]},
+        })
+        res.status(200).json(conversation) 
+    }catch(err){
+        res.status(500).json(err.message)
+    }
+})
 module.exports = router;

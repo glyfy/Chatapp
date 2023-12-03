@@ -1,6 +1,7 @@
-import Login from "./pages/login/Login"
-import Register from "./pages/register/Register"
-import Home from "./pages/home/Home"
+import Login from "./pages/login/Login";
+import Register from "./pages/register/Register";
+import Home from "./pages/home/Home";
+import Search from "./pages/search/Search";
 import {
   BrowserRouter as Router,
   Switch,
@@ -24,6 +25,9 @@ function App() {
       </Route>
       <Route exact path = "/register">
         {user ? <Home/> : <Register/>}
+      </Route>
+      <Route exact path = "/searchResults">
+        {user ? <Search/> : <Login/>}
       </Route>
     </Switch>
   </Router>

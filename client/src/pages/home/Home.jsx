@@ -11,7 +11,8 @@ import { io } from "socket.io-client"
 export default function Home() {
     const [conversations, setConversations] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
-    const [messages, setMessages] = useState([]) ;
+    const [messages, setMessages] = useState([]);
+    const [onlineFriends, setOnlineFriends] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const {user} = useContext(AuthContext);
     const scrollRef = useRef(null);
@@ -23,15 +24,16 @@ export default function Home() {
         return () => socket.current?.disconnect(); 
     }, []);
 
-    // addUser
     useEffect(() => {
-        socket.current.emit("addUser", {userId: user._id, username: user.username})
+        socket.current.emit("addUser", {userId: user._id, username: user.username}) // add user on socket server
         socket.current.on("getUsers", users =>{
-            console.log(users)
+            // console.log(users)
+            // setOnlineFriends(user.following.filter((u) => users.some(socketUser => u === socketUser.userId))); // get all online followings
+            setOnlineFriends(users.filter((u) => user.following.includes(u.userId)))
         })
     }, [user])
 
-    // get conversation
+    // get conversations
     useEffect(()=>{
         const getConversations = async () => { 
             try {
@@ -43,11 +45,13 @@ export default function Home() {
         };
         getConversations()
     }, [user._id])
-    
+
     // get messages for current conversation
     useEffect(() => {
         const getMessages = async () => {
+            console.log(currentChat)
             const res = await axiosInstance(`/messages/${currentChat?._id}`);
+            // console.log(res.data)
             setMessages(res.data)
         };
         getMessages();
@@ -69,7 +73,7 @@ export default function Home() {
                 }
                 const res = await axiosInstance.post("/messages/", message)
                 socket.current.emit("sendMsg", ({
-                    receiverId: currentChat.members.filter(member => member.user_id != user.user_id),
+                    receiverId: currentChat.members.filter(member => member.user_id !== user.user_id),
                     msg: newMessage
                 }))
                 setMessages([...messages, res.data])
@@ -103,7 +107,7 @@ export default function Home() {
                         <div className="chatBoxTop">
                             { messages.map((m) => (
                                 <div ref={scrollRef}>
-                                    <Message message={m} own={m.sender === user._id}/>
+                                    <Message message={m} own={m.sender === user._id} key={m._id}/>
                                 </div>
                             ))
                             }
@@ -122,7 +126,7 @@ export default function Home() {
             </div>
             <div className="chatOnline">
                 <div className="chatOnlineWrapper">
-                    <ChatOnline/>
+                    <ChatOnline onlineFriends={onlineFriends} currentUserId={user._id} setCurrentChat={setCurrentChat}/>
                 </div>
             </div>
         </div>

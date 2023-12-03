@@ -21,7 +21,7 @@ const session = require('express-session');
 
 
 dotenv.config();
-console.log(process.env.MONGO_URL)
+// console.log(process.env.MONGO_URL)
 mongoose.connect( process.env.MONGO_URL, 
   {useNewURLParser: true}, 
   (err) => {
@@ -31,9 +31,8 @@ mongoose.connect( process.env.MONGO_URL,
     else {
       console.log("Connected to MongoDB");
     }
-    
 });
-
+console.log(mongoose.connection.readyState)
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 //middleware

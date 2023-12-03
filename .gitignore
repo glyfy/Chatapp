@@ -1,6 +1,6 @@
 /api/.env
 /api/node_modules
-/api/mongoCommands
+/api/mongoCommands.js
 
 /client/.env
 /client/node_modules

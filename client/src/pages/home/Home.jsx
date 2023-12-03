@@ -49,9 +49,7 @@ export default function Home() {
     // get messages for current conversation
     useEffect(() => {
         const getMessages = async () => {
-            console.log(currentChat)
             const res = await axiosInstance(`/messages/${currentChat?._id}`);
-            // console.log(res.data)
             setMessages(res.data)
         };
         getMessages();

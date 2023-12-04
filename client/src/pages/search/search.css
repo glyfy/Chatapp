@@ -6,7 +6,8 @@
 
 .searchResultsWrapper{
     width: 40%;
-    height: calc(100vh - 70px);
+    height: auto;
+    min-height: 100vh;
     margin-top: 20px;
     background-color: white;
     border-radius: 10px;
@@ -28,7 +29,6 @@
 }
 
 .followButton{
-    /* border: 2px black solid; */
     display: flex;    
     margin-left: auto;
     margin-right: 20px;

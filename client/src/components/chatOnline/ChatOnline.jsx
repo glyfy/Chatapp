@@ -7,10 +7,11 @@ export default function ChatOnline({onlineFriends, currentUserId, setCurrentChat
     const res = await axiosInstance.get(`/conversations/${currentUserId}/${friend.userId}`);
     setCurrentChat(res.data[0]);
   }
+
   return (
     <div className="chatOnline">
       { onlineFriends.map((friend) =>
-      <div className="chatOnlineFriend" onClick={() => handleClick(friend)}>
+      <div key={friend.userId} className="chatOnlineFriend" onClick={() => handleClick(friend)}>
         <div className="chatOnlineImgContainer">
           <img className="chatOnlineImg" 
             src={"/images/noAvatar.png"} 

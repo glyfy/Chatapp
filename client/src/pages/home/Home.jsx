@@ -17,7 +17,6 @@ export default function Home() {
     const {user} = useContext(AuthContext);
     const scrollRef = useRef(null);
     const socket = useRef();
-
     // set up socket connection
     useEffect(() => {
         socket.current = io("ws://localhost:8900");
@@ -27,9 +26,14 @@ export default function Home() {
     useEffect(() => {
         socket.current.emit("addUser", {userId: user._id, username: user.username}) // add user on socket server
         socket.current.on("getUsers", users =>{
-            // console.log(users)
-            // setOnlineFriends(user.following.filter((u) => users.some(socketUser => u === socketUser.userId))); // get all online followings
             setOnlineFriends(users.filter((u) => user.following.includes(u.userId)))
+        })
+        socket.current.on("receiveMsg", msg =>{
+            console.log(currentChat._id)
+            console.log(msg)
+            if (currentChat._id === msg.conversationId){
+                setMessages(prev => [...prev, msg])
+            }
         })
     }, [user])
 
@@ -69,13 +73,14 @@ export default function Home() {
                     sender : user._id,
                     text: newMessage    
                 }
-                const res = await axiosInstance.post("/messages/", message)
+                const res1 = await axiosInstance.put(`/conversations/updateTime/${currentChat._id}/${new Date().toISOString()}`)
+                const res = await axiosInstance.post("/messages/", message);
                 socket.current.emit("sendMsg", ({
-                    receiverId: currentChat.members.filter(member => member.user_id !== user.user_id),
-                    msg: newMessage
+                    receiverId: currentChat.members.find(member => member !== user._id),
+                    msg: res.data
                 }))
-                setMessages([...messages, res.data])
-                setNewMessage("")
+                setMessages([...messages, res.data]);
+                setCurrentChat(res1.data);
             } 
         }catch(err){
             console.log(err.message)
@@ -91,7 +96,7 @@ export default function Home() {
                 <div className="chatMenuWrapper">
                     <input placeholder="Search for friends" className="chatMenuInput"/>
                     {conversations.map((c) => (
-                        <div onClick={() => setCurrentChat(c)} className="a">
+                        <div key={c._id} onClick={() => setCurrentChat(c)} className="a">
                             <Conversation conversation={c} currentUser={user} key={c._id}/>
                         </div>
                         ))}

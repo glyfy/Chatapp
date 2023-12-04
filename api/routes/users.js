@@ -22,7 +22,7 @@ router.get("/:userId", async (req,res) =>{
 //get all users who fit a username
 router.get("/search/:searchInput", async (req,res) =>{
     try{
-        results = await User.find({ username: req.params.searchInput});
+        results = await User.find({ username: new RegExp(req.params.searchInput, 'i') });
         res.status(200).json(results);
     } catch(err){
         res.status(500).json("No possible users");
@@ -30,19 +30,19 @@ router.get("/search/:searchInput", async (req,res) =>{
 })
 
 //follow a user
-router.put("/:targetId/follow", async (req, res) => {
-    console.log(req.body.followerId)
-    console.log(req.params.targetId)
+router.put("/follow/:targetId", async (req, res) => {
+    // console.log(req.body.followerId)
+    // console.log(req.params.targetId)
     if(req.body.followerId !== req.params.targetId){
         try {
             const followerId = req.body.followerId;
             const targetId = req.params.targetId;
             const target = await User.findById(targetId);
             const follower = await User.findById(followerId);
-            if (!target.followers.includes(targetId)){
+            if (!target.followers.includes(followerId) && !follower.following.includes(targetId)){
                 await target.updateOne({$push:{ followers: followerId }});
                 await follower.updateOne({$push:{ following: targetId }});
-                res.status(200).json("user has been followed")
+                res.status(200).json(`user ${target.username} has been followed`);
             } else{
                 res.status(403).json("you already follow this user");
             }
@@ -56,17 +56,17 @@ router.put("/:targetId/follow", async (req, res) => {
 })
 
 //unfollow a user
-router.put("/:targetId/unfollow", async (req, res) => {
+router.put("/unfollow/:targetId", async (req, res) => {
     if(req.body.unfollowerId !== req.params.targetId){
         try {
             const unfollowerId = req.body.unfollowerId;
             const targetId = req.params.targetId;
             const target = await User.findById(targetId);
             const unfollower = await User.findById(unfollowerId);
-            if (target.followers.includes(unfollowerId)){
+            if (target.followers.includes(unfollowerId) && unfollower.following.includes(targetId)){
                 await target.updateOne({$pull:{ followers: unfollowerId }});
                 await unfollower.updateOne({$pull:{ following: targetId }});
-                res.status(200).json("user has been unfollowed")
+                res.status(200).json(`user ${target.username} has been unfollowed`)
             } else{
                 res.status(403).json("you already dont follow this user");
             }

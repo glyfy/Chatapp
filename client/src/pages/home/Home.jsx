@@ -16,7 +16,9 @@ export default function Home() {
     const [newMessage, setNewMessage] = useState("");
     const {user} = useContext(AuthContext);
     const scrollRef = useRef(null);
+    const menuInputRef = useRef("")
     const socket = useRef();
+    
     // set up socket connection
     useEffect(() => {
         socket.current = io("ws://localhost:8900");
@@ -61,8 +63,8 @@ export default function Home() {
 
     // scroll down chat messages
     useEffect(() => {
-        scrollRef.current?.scrollIntoView({behaviour: "smooth"})
-    }, [currentChat])
+        scrollRef.current?.scrollIntoView();
+    }, [messages])
 
     // send message
     const handleSubmit = async () => {
@@ -88,18 +90,32 @@ export default function Home() {
        
     } 
     
+    const handleMenuSubmit = async(e) =>{
+        e.preventDefault();
+        try{
+            const res = await axiosInstance.get(`conversations/${user._id}?searchInput=${menuInputRef.current.value}`);
+            const conversations = res.data;
+            setConversations(conversations);
+        } catch(err){
+            console.log(err.msg);
+        }
+        
+    }
+    
     return (
     <>
         <Topbar/>
         <div className="messenger">
             <div className="chatMenu">
                 <div className="chatMenuWrapper">
-                    <input placeholder="Search for friends" className="chatMenuInput"/>
-                    {conversations.map((c) => (
-                        <div key={c._id} onClick={() => setCurrentChat(c)} className="a">
-                            <Conversation conversation={c} currentUser={user} key={c._id}/>
-                        </div>
-                        ))}
+                    <form className="chatMenuForm" onSubmit={handleMenuSubmit}>      
+                        <input className="chatMenuInput" placeholder="Search for friends" ref={menuInputRef}/>
+                        {conversations.map((c) => (
+                            <div key={c._id} onClick={() => setCurrentChat(c)} className="a">
+                                <Conversation conversation={c} currentUser={user} key={c._id}/>
+                            </div>
+                            ))}
+                    </form>  
                 </div>
             </div>
             <div className="chatBox">

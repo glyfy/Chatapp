@@ -29,7 +29,7 @@ export default function Login() {
             <div className={loginStyles.loginRight}>
               <form className={loginStyles.loginBox} onSubmit={handleLogin}>
                 <input placeholder="Username" className={loginStyles.loginInput} ref={username}/>
-                <input placeholder="Password" className={loginStyles.loginInput} ref={password}/>
+                <input placeholder="Password" type = "password" className={loginStyles.loginInput} ref={password}/>
                 <button className={loginStyles.loginButton}>Log In</button>
                 <Link to={"/register"}> 
                   <button className={loginStyles.loginRegisterButton}>Create New Account</button> 

@@ -40,9 +40,11 @@ io.on("connection", (socket) => {
     // user sends message to another user
     socket.on("sendMsg", ({receiverId, msg}) => {
         const receiver = getUser(receiverId)
-        receiverSocketId = receiver.socketId
-        console.log(`sending message to ${receiver.username}`)
-        io.to(receiverSocketId).emit("receiveMsg", msg)
+        if (receiver){
+            receiverSocketId = receiver.socketId
+            console.log(`sending message to ${receiver.username}`)
+            io.to(receiverSocketId).emit("receiveMsg", msg)
+        }
     })
 });
 

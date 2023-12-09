@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Conversation = require("../models/Conversation");
+const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
 // new conv
@@ -24,12 +25,28 @@ router.post("/", async (req,res)=>{
 
 //get all conversations of user
 router.get("/:userId", async (req,res) => {
-    // console.log(req.params.userId)
     try{
-        const conversation = await Conversation.find({
-            members:{$in: [req.params.userId]},
-        }).sort({newestCommentTime: -1}).limit(10);
-        res.status(200).json(conversation); 
+        if (req.query.searchInput){ // find users that currentUser is following
+            const users = await User.find({ 
+                username: new RegExp(req.query.searchInput, 'i'), 
+                followed: { $in: [req.params.userId]} 
+            });
+            if (users.length !== 0){
+                const userIds = users.map(user => user._id.toString()); 
+                console.log(userIds)
+                const conversations = await Conversation.find({members: {$in: userIds}}).sort({newestCommentTime: -1});
+                console.log(conversations)
+                return res.status(200).json(conversations);
+            } else{
+                return res.status(404).json("No friends matching search query")
+            }
+        } else{
+            const conversation = await Conversation.find({
+                members:{$in: [req.params.userId]},
+            }).sort({newestCommentTime: -1}).limit(10);
+            return res.status(200).json(conversation);
+        }
+ 
     }catch(err){
         res.status(500).json(err.message);
     }

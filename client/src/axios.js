@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3001/api'
+    baseURL: 'https://chatapp-76m3.onrender.com/api'
 })

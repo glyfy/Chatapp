@@ -4,6 +4,8 @@ const io = require("socket.io")(8900,{
     }
 });
 
+console.log("Socket working!")
+
 let users = []
 // add users function
 const addUser = (userId, socketId, username) => {

@@ -85,7 +85,7 @@ export default function Home() {
                     msg: res.data
                 }))
                 setMessages([...messages, res.data]);
-                setCurrentChat(res1.data);
+                // setCurrentChat(res1.data);
                 console.log(currentChat)
             } 
         }catch(err){

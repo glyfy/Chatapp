@@ -21,7 +21,7 @@ export default function Home() {
     
     // set up socket connection
     useEffect(() => {
-        socket.current = io("ws://localhost:8900");
+        socket.current = io("ws://chatapp-socket-server.onrender.com:8900");
         return () => socket.current?.disconnect(); 
     }, []);
 

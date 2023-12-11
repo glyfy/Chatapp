@@ -21,22 +21,23 @@ export default function Home() {
     
     // set up socket connection
     useEffect(() => {
-        socket.current = io("ws://localhost:8900");
+        socket.current = io("wss://chatapp-socket-server.onrender.com");
         return () => socket.current?.disconnect(); 
     }, []);
 
     useEffect(() => {
-        socket.current.emit("addUser", {userId: user._id, username: user.username}) // add user on socket server
-        socket.current.on("getUsers", users =>{
-            setOnlineFriends(users.filter((u) => user.following.includes(u.userId)))
-        })
-        socket.current.on("receiveMsg", msg =>{
-            console.log(currentChat);
-            if (currentChat?._id === msg.conversationId){
-                setMessages(prev => [...prev, msg])
-            }
-        })
-    }, [user])
+        socket.current.on("receiveMsg", msg => {
+            console.log(currentChat)
+            console.log(msg)
+            // Use a callback function in setMessages to ensure the correct state is captured
+            setMessages(prev => {
+                if (prev && currentChat?._id === msg.conversationId) {
+                    return [...prev, msg];
+                }
+                return prev;
+            });
+        });
+    }, [currentChat, user]);
 
     // get conversations
     useEffect(()=>{

@@ -41,7 +41,7 @@ app.use(express.json());
 //create sessions
 app.use(cors({
   origin:
-  ["http://localhost:3000"],
+  ["https://chatapp-glyfy.netlify.app"],
   methods:["GET", "POST", "PUT"],
   credentials: true
 }))

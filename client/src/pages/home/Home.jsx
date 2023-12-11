@@ -36,7 +36,7 @@ export default function Home() {
         socket.current.on("receiveMsg", msg =>{
             console.log(currentChat?._id)
             console.log(msg)
-            if (currentChat._id === msg.conversationId){
+            if (currentChat?._id === msg.conversationId){
                 setMessages(prev => [...prev, msg])
             }
         })

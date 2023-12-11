@@ -36,11 +36,12 @@ export default function Home() {
         socket.current.on("receiveMsg", msg =>{
             console.log(currentChat)
             console.log(msg)
+            console.log(conversations)
             if (currentChat?._id === msg.conversationId){
                 setMessages(prev => [...prev, msg])
             }
         })
-    }, [user])
+    }, [user, currentChat])
 
     // get conversations
     useEffect(()=>{

@@ -18,7 +18,8 @@ export default function Home() {
     const scrollRef = useRef(null);
     const menuInputRef = useRef("")
     const socket = useRef();
-    
+    console.log(conversations)
+    console.log(currentChat);
     // set up socket connection
     useEffect(() => {
         socket.current = io("ws://localhost:8900");
@@ -31,12 +32,12 @@ export default function Home() {
             setOnlineFriends(users.filter((u) => user.following.includes(u.userId)))
         })
         socket.current.on("receiveMsg", msg =>{
-            console.log(currentChat);
+            console.log(currentChat)
             if (currentChat?._id === msg.conversationId){
                 setMessages(prev => [...prev, msg])
             }
         })
-    }, [user])
+    }, [user, currentChat])
 
     // get conversations
     useEffect(()=>{
@@ -74,13 +75,14 @@ export default function Home() {
                     sender : user._id,
                     text: newMessage    
                 }
-                // const res1 = await axiosInstance.put(`/conversations/updateTime/${currentChat._id}/${new Date().toISOString()}`)
+                const res1 = await axiosInstance.put(`/conversations/updateTime/${currentChat._id}/${new Date().toISOString()}`)
                 const res = await axiosInstance.post("/messages/", message);
                 socket.current.emit("sendMsg", ({
                     receiverId: currentChat.members.find(member => member !== user._id),
                     msg: res.data
                 }))
-                setMessages([...messages, res.data]);
+                console.log(res.data)
+                setMessages(prev => [...prev, res.data]);
                 // setCurrentChat(res1.data);
             } 
         }catch(err){
@@ -110,7 +112,7 @@ export default function Home() {
                     <form className="chatMenuForm" onSubmit={handleMenuSubmit}>      
                         <input className="chatMenuInput" placeholder="Search for friends" ref={menuInputRef}/>
                         {conversations.map((c) => (
-                            <div key={c._id} onClick={() => {setCurrentChat(c); console.log(currentChat)}} className="a">
+                            <div key={c._id} onClick={() => setCurrentChat(c)} className="a">
                                 <Conversation conversation={c} currentUser={user} key={c._id}/>
                             </div>
                             ))}

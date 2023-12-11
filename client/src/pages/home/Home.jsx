@@ -31,6 +31,7 @@ export default function Home() {
             setOnlineFriends(users.filter((u) => user.following.includes(u.userId)))
         })
         socket.current.on("receiveMsg", msg =>{
+            console.log(currentChat);
             if (currentChat?._id === msg.conversationId){
                 setMessages(prev => [...prev, msg])
             }
@@ -73,14 +74,14 @@ export default function Home() {
                     sender : user._id,
                     text: newMessage    
                 }
-                const res1 = await axiosInstance.put(`/conversations/updateTime/${currentChat._id}/${new Date().toISOString()}`)
+                // const res1 = await axiosInstance.put(`/conversations/updateTime/${currentChat._id}/${new Date().toISOString()}`)
                 const res = await axiosInstance.post("/messages/", message);
                 socket.current.emit("sendMsg", ({
                     receiverId: currentChat.members.find(member => member !== user._id),
                     msg: res.data
                 }))
                 setMessages([...messages, res.data]);
-                setCurrentChat(res1.data);
+                // setCurrentChat(res1.data);
             } 
         }catch(err){
             console.log(err.message)
@@ -109,7 +110,7 @@ export default function Home() {
                     <form className="chatMenuForm" onSubmit={handleMenuSubmit}>      
                         <input className="chatMenuInput" placeholder="Search for friends" ref={menuInputRef}/>
                         {conversations.map((c) => (
-                            <div key={c._id} onClick={() => setCurrentChat(c)} className="a">
+                            <div key={c._id} onClick={() => {setCurrentChat(c); console.log(currentChat)}} className="a">
                                 <Conversation conversation={c} currentUser={user} key={c._id}/>
                             </div>
                             ))}

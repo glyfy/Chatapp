@@ -21,7 +21,7 @@ export default function Home() {
     
     // set up socket connection
     useEffect(() => {
-        socket.current = io("wss://chatapp-socket-server.onrender.com", {rejectUnauthorized: false} );
+        socket.current = io("wss://chatapp-socket-server.onrender.com");
         socket.current.on("connect_error", (err) => {
             console.log(`connect_error due to ${err.message}`);
         });

@@ -34,7 +34,7 @@ export default function Home() {
             setOnlineFriends(users.filter((u) => user.following.includes(u.userId)))
         })
         socket.current.on("receiveMsg", msg =>{
-            console.log(currentChat?._id)
+            console.log(currentChat)
             console.log(msg)
             if (currentChat?._id === msg.conversationId){
                 setMessages(prev => [...prev, msg])
@@ -115,7 +115,7 @@ export default function Home() {
                     <form className="chatMenuForm" onSubmit={handleMenuSubmit}>      
                         <input className="chatMenuInput" placeholder="Search for friends" ref={menuInputRef}/>
                         {conversations.map((c) => (
-                            <div key={c._id} onClick={() => setCurrentChat(c)} className="a">
+                            <div key={c._id} onClick={() => {setCurrentChat(c); console.log(currentChat)}} className="a">
                                 <Conversation conversation={c} currentUser={user} key={c._id}/>
                             </div>
                             ))}

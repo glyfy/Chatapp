@@ -115,7 +115,7 @@ export default function Home() {
                     <form className="chatMenuForm" onSubmit={handleMenuSubmit}>      
                         <input className="chatMenuInput" placeholder="Search for friends" ref={menuInputRef}/>
                         {conversations.map((c) => (
-                            <div key={c._id} onClick={() => {setCurrentChat(c); console.log(currentChat)}} className="a">
+                            <div key={c._id} onClick={() => {setCurrentChat(c);}} className="a">
                                 <Conversation conversation={c} currentUser={user} key={c._id}/>
                             </div>
                             ))}

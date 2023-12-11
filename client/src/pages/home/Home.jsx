@@ -31,9 +31,9 @@ export default function Home() {
             setOnlineFriends(users.filter((u) => user.following.includes(u.userId)))
         })
         socket.current.on("receiveMsg", msg =>{
-            console.log(currentChat._id)
+            console.log(currentChat?._id)
             console.log(msg)
-            if (currentChat._id === msg.conversationId){
+            if (currentChat?._id === msg.conversationId){
                 setMessages(prev => [...prev, msg])
             }
         })

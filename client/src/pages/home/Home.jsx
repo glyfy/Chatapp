@@ -18,7 +18,7 @@ export default function Home() {
     const scrollRef = useRef(null);
     const menuInputRef = useRef("")
     const socket = useRef();
-    console.log(conversations)
+
     console.log(currentChat);
     // set up socket connection
     useEffect(() => {
@@ -32,7 +32,6 @@ export default function Home() {
             setOnlineFriends(users.filter((u) => user.following.includes(u.userId)))
         })
         socket.current.on("receiveMsg", msg =>{
-            console.log(currentChat)
             if (currentChat?._id === msg.conversationId){
                 setMessages(prev => [...prev, msg])
             }
@@ -81,7 +80,6 @@ export default function Home() {
                     receiverId: currentChat.members.find(member => member !== user._id),
                     msg: res.data
                 }))
-                console.log(res.data)
                 setMessages(prev => [...prev, res.data]);
                 // setCurrentChat(res1.data);
             } 
@@ -126,7 +124,7 @@ export default function Home() {
                         <>
                         <div className="chatBoxTop">
                             { messages.map((m) => (
-                                <div ref={scrollRef}>
+                                <div ref={scrollRef} key={m._id}>
                                     <Message message={m} own={m.sender === user._id} key={m._id}/>
                                 </div>
                             ))

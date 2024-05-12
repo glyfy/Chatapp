@@ -6,7 +6,7 @@ export default function Messenger({message, own}) {
         <div className="messageTop">
             <img
             className = "messageImg" 
-             src="images/handsome_chinese_fella.jpg" 
+             src="images/noavatar.png" 
              alt="" 
             />
             <p className="messageText">{message.text}</p>
